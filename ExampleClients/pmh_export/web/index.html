@@ -1,0 +1,270 @@
+<html>
+    <head>
+        <title>Export Map Service</title>
+        <link rel="stylesheet" type="text/css" href="css/main.css"/>
+        <link rel="stylesheet" type="text/css" href="dijits/tableOfContents/TableOfContents/css/tableOfContents.css"/>
+        <link rel="stylesheet" type="text/css" href="dijits/controls/TabDrawer/css/tabDrawer.css"/>
+        <link rel="stylesheet" type="text/css" href="dijits/tasks/ExportMapService/css/exportMapService.css"/>
+        <link rel="stylesheet" type="text/css" href="http://serverapi.arcgisonline.com/jsapi/arcgis/2.7/js/dojo/dijit/themes/claro/claro.css">
+        <style type="text/css">
+            #headerPane {
+                margin: 2px;
+                padding: 2px 10px;
+                border: 1px solid gray;
+                height: 70px;
+                background-color: white;
+                overflow: auto;
+            }
+        </style>
+        <script type="text/javascript">
+            var dojoConfig = {
+                parseOnLoad: true,
+                baseUrl: './',
+                modulePaths: {
+                    "dijits": "dijits"
+                }
+            };
+        </script>
+        <script type="text/javascript" src="http://serverapi.arcgisonline.com/jsapi/arcgis/?v=2.7">
+        </script>
+        <script type="text/javascript">
+            dojo.require("dijit.Dialog");
+            dojo.require("dijit.form.Button");
+            dojo.require("dijit.layout.BorderContainer");
+            dojo.require("dijit.layout.ContentPane");
+            dojo.require("dijit.layout.TabContainer");
+            dojo.require("esri.map");
+            dojo.require("esri.dijit.BasemapGallery");
+            dojo.require("esri.layers.agsdynamic");
+            dojo.require("esri.layers.agstiled");
+            dojo.require("esri.layers.FeatureLayer");
+            dojo.require("dijits.tasks.ExportMapService");
+            dojo.require("dijits.tableOfContents.TableOfContents");
+            dojo.require("dijits.controls.TabDrawer");
+            
+            var baseMaps = [{
+                    "id": "topoBase",
+                    "title": "Topology",
+                    "url": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer",
+                    "thumbnailUrl": "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/export?bbox=-10586222.66938103,4681309.360296133,-10466675.157143071,4791990.177253015&bboxSR=102100&size=100,67&format=jpg&transparent=false&f=image"
+                }, {
+                    "id": "aerialBase",
+                    "title": "Aerial",
+                    "url": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer",
+                    "thumbnailUrl": "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/export?bbox=-10586222.66938103,4681309.360296133,-10466675.157143071,4791990.177253015&size=100,67&format=jpg&transparent=false&f=image"
+                }];
+            
+            var layers = [{
+                    id: "Earthquakes_2011",
+                    name: "Earthquakes_2011",
+                    url: "http://localhost:8399/arcgis/rest/services/pmh/Earthquakes_2011/MapServer",
+                    type: "dynamic",
+                    opacity: 1.0,
+                    visible: "true"
+                },{
+                    id: "Floods_2011",
+                    name: "Floods_2011",
+                    url: "http://localhost:8399/arcgis/rest/services/pmh/Floods_2011/MapServer",
+                    type: "dynamic",
+                    opacity: 1.0,
+                    visible: "true"
+                },{
+                    id: "Hurricanes_2011",
+                    name: "Hurricanes_2011",
+                    url: "http://localhost:8399/arcgis/rest/services/pmh/Hurricanes_2011/MapServer",
+                    type: "dynamic",
+                    opacity: 1.0,
+                    visible: "true"
+                },{
+                    id: "Man_Made_2011",
+                    name: "Man_Made_2011",
+                    url: "http://localhost:8399/arcgis/rest/services/pmh/Man_Made_2011/MapServer",
+                    type: "dynamic",
+                    opacity: 1.0,
+                    visible: "true"
+                },{
+                    id: "Other_2011",
+                    name: "Other_2011",
+                    url: "http://localhost:8399/arcgis/rest/services/pmh/Other_2011/MapServer",
+                    type: "dynamic",
+                    opacity: 1.0,
+                    visible: "true"
+                },{
+                    id: "Tornadoes_2011",
+                    name: "Tornadoes_2011",
+                    url: "http://localhost:8399/arcgis/rest/services/pmh/Tornadoes_2011/MapServer",
+                    type: "dynamic",
+                    opacity: 1.0,
+                    visible: "true"
+                }];
+            var tocPriorityList = ["rsstest"];
+            
+            //*** EXPORT MAP SERVER SERVICE VARIABLES ***//
+            //var exportMapServerServiceUrl = "http://egeoint.nrlssc.navy.mil/arcgis/rest/services/gptools/mapServerTools/GPServer/exportMapServerService";
+            var exportMapServerServiceUrl = "http://localhost:8399/arcgis/rest/services/gptools/mapServerTools/GPServer/exportMapServerService";
+            //*** EXPORT MAP SERVER SERVICE VARIABLES ***//
+            
+            var map;
+            var toc;
+            var rightDrawer;
+            var clipAndShip;
+            function init()
+            {
+                // Init the tabDrawer dijits
+                rightDrawer = new dijits.controls.TabDrawer({
+                    placement: "right",
+                    style: "height: 100%; width:450px;"
+                }).placeAt("map", "first");
+                rightDrawer.startup();
+
+                esri.config.defaults.io.proxyUrl = "proxy.jsp";
+                esri.config.defaults.io.alwaysUseProxy = true;
+                
+                initMap();
+
+                /*
+                var result = dojo.xhr(
+                "GET",
+                {
+                    url: document.location
+                }
+            );
+
+                result.then(function (response) {
+                    console.log(result.ioArgs.xhr.getAllResponseHeaders());
+                });
+                */
+
+            }
+            
+            function initMap()
+            {
+                var initExt = new esri.geometry.Extent({
+                    "xmin": -10171322.61,
+                    "ymin": 4631992.22,
+                    "xmax": -10002091.03,
+                    "ymax": 4746647.76,
+                    "spatialReference": {
+                        "wkid": 102100
+                    }
+                });
+                map = new esri.Map("map", {
+                    extent: initExt
+                });
+                
+                var basemap = new esri.layers.ArcGISTiledMapServiceLayer("http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer");
+                map.addLayer(basemap);
+                
+                var basemaps = dojo.map(baseMaps, function(baseMap)
+                {
+                    var baseMapLayer = new esri.dijit.BasemapLayer({
+                        url: baseMap.url
+                    });
+                    var baseMapBTN = new esri.dijit.Basemap({
+                        layers: [baseMapLayer],
+                        id: baseMap.id,
+                        title: baseMap.title,
+                        thumbnailUrl: baseMap.thumbnailUrl
+                    });
+                    return baseMapBTN;
+                });
+                
+                var basemapGallery = new esri.dijit.BasemapGallery({
+                    showArcGISBasemaps: false,
+                    basemaps: basemaps,
+                    map: map,
+                    preload: true
+                }, rightDrawer.addTab("Basemaps"));
+                basemapGallery.startup();
+                
+                dojo.connect(map, 'onLoad', function(map)
+                {
+                    // Map resizing
+                    dojo.connect(dijit.byId('map'), 'resize', map, map.resize);
+                    
+                    // init the ToC dijit
+                    toc = dijits.tableOfContents.TableOfContents({
+                        map: map,
+                        priorityList: tocPriorityList
+                    }).placeAt(rightDrawer.addTab("Layers"));
+                    
+                    // load up all the map layers
+                    loadLayers();
+                    
+                    // Init the clip and ship tools
+                    // *** EXPORT MAP SERVICE DIJIT *** //
+                    exportMapService = new dijits.tasks.ExportMapService({
+                        map: map,
+                        exportMapServerServiceUrl: exportMapServerServiceUrl
+                    }, rightDrawer.addTab("Export"));
+
+                });
+            }
+            
+            function loadLayers()
+            {
+                dojo.forEach(layers, function(layer)
+                {
+                    var mapLayer = createServiceLayer(layer);
+                    if (mapLayer) 
+                    {
+                        dojo.connect(mapLayer, "onLoad", function(loadedLayer)
+                        {
+                            // Add layer to the map
+                            map.addLayer(loadedLayer);
+                            
+                            // add the layer to the toc
+                            toc.addLayer(loadedLayer, layer.name);
+                        });
+                    }
+                });
+            }
+            
+            function createServiceLayer(layerInfo)
+            {
+                var mapLayer;
+                
+                switch (layerInfo.type)
+                {
+                    case "dynamic":
+                        mapLayer = new esri.layers.ArcGISDynamicMapServiceLayer(layerInfo.url, {
+                            id: layerInfo.id,
+                            opacity: layerInfo.opacity,
+                            visible: layerInfo.visible
+                        });
+                        break;
+                    case "feature":
+                        mapLayer = new esri.layers.FeatureLayer(layerInfo.url, {
+                            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                            id: layerInfo.id,
+                            opacity: layerInfo.opacity,
+                            visible: layerInfo.visible
+                        });
+                        break;
+                    case "tiled":
+                        mapLayer = new esri.layers.ArcGISTiledMapServiceLayer(layerInfo.url, {
+                            id: layerInfo.id,
+                            opacity: layerInfo.opacity,
+                            visible: layerInfo.visible
+                        });
+                        break;
+                }
+                
+                return mapLayer;
+            }
+            
+            dojo.addOnLoad(init);
+        </script>
+    </head>
+    <body class="claro" style="font-family:Arial, Helvetica, sans-serif;">
+        <div id="borderContainer" dojotype="dijit.layout.BorderContainer" design="headline" gutters="false" liveSplitters="true">
+            <div id="headerPane" dojotype="dijit.layout.ContentPane" region="top" style=" vertical-align:middle;">
+                <span style="font-weight:bold; font-size:24pt;">Export Map Service </span>
+                <br/>
+                (under "Export" drawer on right)
+            </div>
+            <div id="map" dojotype="dijit.layout.ContentPane" region="center" style="overflow:hidden;">
+            </div>
+        </div>
+    </body>
+</html>

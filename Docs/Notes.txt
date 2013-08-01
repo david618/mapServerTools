@@ -1,0 +1,11 @@
+JIRA Issue: ESRI-89 Export Map Service Query to Shapefile GPTool
+
+May allow output to File or Personal Geodatabase too.   File or Personal will be an older version (e.g. 9.3).   That will allow any older ArcGIS Desktop Client to access it.
+
+Security reasons I will need to limit what servers the service can be used against.   I do not want to allow the user to potentially attack other servers using my tools as a proxy.   
+
+Shapefile do not support null values.   They come in as None from JSON and you have to force them to some default value for int, date, etc.
+http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#//002t0000000m000000.htm
+
+
+

@@ -1,0 +1,53 @@
+<div dojoAttachPoint="rootNode" style="height:100%; width:100%; padding:0px; margin:0px;">
+    <div class="clipAndShipClipPolyContainer" dojoAttachPoint="clipPolyOptions">
+        <div style="padding:5px;">
+            <div style="font-weight: bold; font-size: 15pt;">
+                Select Export Extent:
+            </div>
+            <div>
+                <input type="radio" dojoType="dijit.form.RadioButton" name="clipPolyOption" value="world" checked dojoAttachPoint="worldOptionRadio">
+                <label for="worldOption">
+                    Worldwide
+                </label>&nbsp;<input type="radio" dojoType="dijit.form.RadioButton" name="clipPolyOption" value="map" dojoAttachPoint="mapExtentOptionRadio">
+                <label for="mapExtentOption">
+                    Map Extent
+                </label>&nbsp;<input type="radio" dojoType="dijit.form.RadioButton" name="clipPolyOption" value="custom" dojoAttachPoint="customPolyOptionRadio">
+                <label for="customPolyOption">
+                    Custom
+                </label>
+            </div>
+            <div style="margin-top:10px;">
+                <span dojoAttachPoint="clipCheckContainer" class="show" style="display:inline;">
+				    <input type="checkbox" dojoType="dijit.form.CheckBox" disabled="true" dojoAttachPoint="clipFeaturesCheck" checked="true">
+                    <label for="clipFeatures-CHK">
+                        Clip Features
+                    </label>
+                </span>
+                <span dojoAttachPoint="drawPolyButtonContainer" class="show" style="display:inline;">
+                    <button type="button" dojoType="dijit.form.Button" disabled="true" dojoAttachPoint="drawPolyButton">
+                        Draw Polygon
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="clipAndShipServiceSelectionContainer">
+        <div style="padding:5px;">
+            <div style="font-weight: bold; font-size: 15pt;">
+                Select Service to Export:
+            </div>
+            <div dojoAttachPoint="serviceListContainer">
+            </div>
+        </div>
+    </div>
+    <div class="clipAndShipDialogButtonContainer">
+        <div style="text-align:right; padding:0px; border:0px">
+            <button type="button" dojoType="dojox.form.BusyButton" busyLabel="Exporting..." dojoAttachPoint="exportButton">
+                Export
+            </button>
+            <button type="button" dojoType="dijit.form.Button" dojoAttachPoint="cancelButton">
+                Cancel
+            </button>
+        </div>
+    </div>
+</div>

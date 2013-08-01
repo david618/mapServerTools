@@ -1,0 +1,37 @@
+@import url(http://serverapi.arcgisonline.com/jsapi/arcgis/2.7/js/dojo/dojox/form/resources/BusyButton.css);
+
+.clipAndShipServiceContainer {
+    margin-top: 10px;
+}
+
+.clipAndShipClipPolyContainer {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    height: 100px;
+    border: 1px solid gray;
+    overflow: auto;
+    width: expression(this.parentNode.clientWidth-10);
+}
+
+.clipAndShipServiceSelectionContainer {
+    position: absolute;
+    top: 112px;
+    right: 5px;
+    left: 5px;
+    bottom: 45px;
+    border: 1px solid gray;
+    overflow: auto;
+    height: expression(this.parentNode.clientHeight-160);
+    width: expression(this.parentNode.clientWidth-10);
+}
+
+.clipAndShipDialogButtonContainer {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    left: 5px;
+    border: 0px dotted blue;
+    width: expression(this.parentNode.clientWidth-10);
+}

@@ -1,0 +1,160 @@
+# Google allinurl:arcgis/rest*/MapServer
+
+# Export all of the records 
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcnga/rest/services/vector/NTAD2011/MapServer
+0
+
+Exports 1000 of 19949 features
+#end *******************************************
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcgis/rest/services/overlays/AdminBorders/MapServer
+7
+
+Exports all 252 features, 1.6MB
+#end *******************************************
+
+# begin ****************************************
+# (SHAPE.AREA, SHAPE.LEN)
+http://psstl.esri.com/ArcGIS/rest/services/PACM/HG/MapServer
+2
+Shapefile
+
+
+#end *******************************************
+
+# begin ****************************************
+# (st_area, st_length)
+http://rmgsc.cr.usgs.gov/ArcGIS/rest/services/nhss_weat/MapServer
+0
+PersonalGeoDatabase
+
+
+#end *******************************************
+
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcnga/rest/services/vector/NTAD2011/MapServer
+0
+{"exportAll":"True"}
+Shapefile
+
+
+#end *******************************************
+
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcnga/rest/services/vector/NTAD2011/MapServer/18
+10
+{"exportAll":"True"}
+
+#end *******************************************
+
+
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcnga/rest/services/vector/NTAD2011/MapServer
+31
+
+#end *******************************************
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcnga/rest/services/vector/locationlookup/MapServer
+1
+{"exportAll":"True","where":"country_code = 'US'"}
+
+#end *******************************************
+
+
+# begin ****************************************
+http://web2.nbmg.unr.edu/ArcGIS/rest/services/WA_data/WABoreholeObservations/MapServer
+
+#end *******************************************
+
+
+# begin ****************************************
+http://servicesbeta2.esri.com/arcgis/rest/services/MontgomeryQuarters/MapServer
+
+#end *******************************************
+
+# begin ****************************************
+http://egeoint.nrlssc.navy.mil/arcgis/rest/services/esri/gaz/MapServer
+
+#end *******************************************
+
+# begin ****************************************
+http://mapserver.borough.kenai.ak.us/ArcGIS/rest/services/CodeEnforcement/ParcelPublicAccess/MapServer
+# This has 118 feature layers
+# Might want to allow a range or ranges in layer id's
+# Added support for ranges
+#end *******************************************
+
+# begin ****************************************
+http://www.geocommunicator.gov/ARCGIS/REST/services/Roads/MapServer
+# Download failed
+# While testing the server stopped responding (did I do that??)
+#
+#
+#end *******************************************
+
+# begin ****************************************
+http://gis.hicentral.com/arcgis/rest/services/OperEnv/MapServer
+# Might be nice to have a call that gets counts only 
+# Help to decide if I want to really export all
+# Should send warnings to the log file too!
+# Need to think about time limit on exportServerService
+# I limit the export of layer to 9 minutes; however, the export service
+# call export layer repeatedly. 
+#end *******************************************
+
+
+# begin ****************************************
+http://basemap.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Small/MapServer
+# Dozens of Group Layers.  No subLayerIds
+# My code is trying to get objectids and failing
+# Another call:
+http://basemap.nationalmap.gov/ArcGIS/rest/services/TNM_Vector_Small/MapServer/6?f=json would return 'type' which is "Group Layer"
+#end *******************************************
+
+
+# begin ****************************************
+http://monroeil.mygisonline.com/proxy.php?/ArcGIS/rest/services/MonroeIL/MapServer
+# There was an issue with soils later; kept crashing because the response wasn't coming back to close the connection
+# Moved the code to ignore the error and continue; worked fine
+#
+#
+#end *******************************************
+
+# begin ****************************************
+http://maps.stlouisco.com/ArcGIS/rest/services/dw/AGS_Repository/MapServer
+# 59 layers
+# 9.3.1
+# Bug with SHAPE_LEN
+# Added capability to support layerid ranges (e.g.  0-8,12-13,59)
+#end *******************************************
+
+# begin ****************************************
+http://services.nationalmap.gov/ArcGIS/rest/services/map_indices/MapServer
+# Had layers that started with numbers
+# I didn't think this was possible
+# Added code to append "a" to fcname if the layername started with number
+#
+#
+#end *******************************************
+
+# begin ****************************************
+http://naip.giscenter.isu.edu/ArcGIS/rest/services/ITD_STIP1/MapServer
+# Layer 1 has null geom point returned as nan 
+# Modified code to set geometries to null
+#
+#end *******************************************
+
+
+# begin ****************************************
+http://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places_Alternate/MapServer
+# This is a cached map service no Query operation supported
+# Modified code to return an error if the query call returns error message 
+#end *******************************************
+

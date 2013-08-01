@@ -1,0 +1,30 @@
+.layerLegend {
+    margin: 4px;
+    border: 1px solid gray;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.serviceElementOnly {
+    padding: 3px;
+    background-color: #F5F5DC;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.serviceElement {
+    padding: 3px;
+    background-color: #F5F5DC;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-top-left-radius: 5px;
+    -moz-border-radius-topright: 5px;
+    -moz-border-radius-topleft: 5px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.checkBox {
+    margin: 4px 0px 0px 0px;
+}

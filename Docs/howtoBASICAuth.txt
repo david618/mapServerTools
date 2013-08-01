@@ -1,0 +1,87 @@
+Tried using ArcGIS tokens; however, this was difficult
+- Every time we published a service we had to set it's permission using arcgismanager
+- Getting a token for an ip was difficult with multiple proxies
+
+We are now using http basic authentication
+
+1) Added user to {Tomcat}/conf/tomcat-users.xml
+
+e.g.
+  <role rolename="dvofusers"/>      
+  <user username="dvof" password="*****" roles="dvofusers"/>
+
+2) Added Security Constaint to ArcGIS Services {Tomcat}/webapps/arcgis/services/WEB-INF/web.xml 
+
+   <security-constraint>
+        <display-name>Constraint1</display-name>
+        <web-resource-collection>
+            <web-resource-name>dvof</web-resource-name>
+            <description/>
+	    <url-pattern>/dvof/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>HEAD</http-method>
+            <http-method>PUT</http-method>
+            <http-method>OPTIONS</http-method>
+            <http-method>TRACE</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>dvofusers</description>
+            <role-name>dvofusers</role-name>
+            </auth-constraint>
+        </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+	<realm-name>ArcGIS Server Authentication</realm-name>
+    </login-config>
+    <security-role>
+        <description/>
+        <role-name>dvofusers</role-name>
+    </security-role>
+	
+3. Added Security Constaint to ArcGIS Rest {Tomcat}/webapps/arcgis/rest/WEB-INF/web.xml 
+
+   <security-constraint>
+        <display-name>Constraint1</display-name>
+        <web-resource-collection>
+            <web-resource-name>dvof</web-resource-name>
+            <description/>
+	    <url-pattern>/services/dvof/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+            <http-method>HEAD</http-method>
+            <http-method>PUT</http-method>
+            <http-method>OPTIONS</http-method>
+            <http-method>TRACE</http-method>
+            <http-method>DELETE</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>dvofusers</description>
+            <role-name>dvofusers</role-name>
+            </auth-constraint>
+        </security-constraint>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+	<realm-name>ArcGIS Server Authentication</realm-name>
+    </login-config>
+    <security-role>
+        <description/>
+        <role-name>dvofusers</role-name>
+    </security-role>
+	
+
+4. Added lines to python to do HTTP Basic Auth
+
+import base64
+
+# Create Configuration Variables
+username = "dvof"
+password = "*****"
+
+# Add Authorization to header of req
+base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+authheader =  "Basic %s" % base64string
+req.add_header("Authorization", authheader)  
+
+
